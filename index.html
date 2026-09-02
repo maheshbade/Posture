@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Posture Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            touch-action: none;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            z-index: 1;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform: scaleX(-1);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* ======= TOP STATUS BAR ======= */
+        #status-bar {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            padding: calc(env(safe-area-inset-top, 24px) + 8px) 16px 16px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 60%, transparent);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #posture-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background 0.3s, color 0.3s;
+        }
+        #posture-pill .dot {
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        #posture-pill.good { background: rgba(52,199,89,0.25);  color: #34c759; }
+        #posture-pill.warn { background: rgba(255,204,0,0.25);  color: #ffcc00; }
+        #posture-pill.bad  { background: rgba(255,59,48,0.35);  color: #ff3b30; }
+        #posture-pill.idle { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.55); }
+
+        /* bad-posture timer badge */
+        #bad-timer {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ff3b30;
+            background: rgba(255,59,48,0.18);
+            border-radius: 100px;
+            padding: 4px 14px;
+            display: none;
+            font-variant-numeric: tabular-nums;
+        }
+        #bad-timer.visible { display: block; }
+
+        /* ======= EDGE WARNING STRIPS ======= */
+        .edge-strip {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 10px;
+            z-index: 6;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #strip-left  { left: 0;  background: linear-gradient(to right, rgba(255,59,48,0.85), transparent); }
+        #strip-right { right: 0; background: linear-gradient(to left,  rgba(255,59,48,0.85), transparent); }
+        .edge-strip.visible { opacity: 1; animation: stripPulse 0.9s ease-in-out infinite; }
+
+        @keyframes stripPulse {
+            0%, 100% { opacity: 0.5; width: 10px; }
+            50%       { opacity: 1;   width: 22px; }
+        }
+
+        /* ======= CENTRE ALERT ======= */
+        #alert-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+            gap: 20px;
+        }
+        #alert-overlay.visible {
+            opacity: 1;
+            background: rgba(255,59,48,0.10);
+        }
+
+        /* Big pulsing red circle */
+        #alert-ring {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: rgba(255,59,48,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+            animation: ringPulse 0.8s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(255,59,48,0.7);
+        }
+        @keyframes ringPulse {
+            0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(255,59,48,0.7); }
+            50%  { transform: scale(1.12); box-shadow: 0 0 0 28px rgba(255,59,48,0); }
+            100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(255,59,48,0); }
+        }
+
+        #alert-message {
+            padding: 16px 32px;
+            background: rgba(255,59,48,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 18px;
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        /* ======= BOTTOM CONTROLS ======= */
+        #controls {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 20px 20px calc(env(safe-area-inset-bottom, 16px) + 12px);
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 60%, transparent);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #debug-line {
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            font-variant-numeric: tabular-nums;
+            min-height: 15px;
+            text-align: center;
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .slider-row label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            white-space: nowrap;
+            min-width: 72px;
+        }
+        .slider-row input[type="range"] {
+            flex: 1;
+            accent-color: #34c759;
+            height: 4px;
+        }
+
+        .btn {
+            padding: 13px 36px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s, background 0.2s;
+        }
+        .btn:active { transform: scale(0.96); }
+        #calibrate-btn {
+            background: rgba(255,255,255,0.18);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        #calibrate-btn.calibrating {
+            background: rgba(52,199,89,0.25);
+            color: #34c759;
+        }
+
+        /* ======= CALIBRATION OVERLAY ======= */
+        #cal-overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 50;
+            gap: 14px;
+        }
+        #cal-overlay.active { display: flex; }
+        #cal-overlay h2 { font-size: 24px; font-weight: 800; }
+        #cal-overlay p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.65);
+            text-align: center;
+            max-width: 260px;
+            line-height: 1.5;
+        }
+        #countdown {
+            font-size: 80px;
+            font-weight: 900;
+            color: #34c759;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+        #cal-live-score {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ======= LOADING ======= */
+        #loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            z-index: 100;
+            gap: 20px;
+        }
+        #loading.hidden { display: none; }
+
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #loading p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            max-width: 280px;
+            line-height: 1.5;
+        }
+
+        #error-box {
+            display: none;
+            padding: 16px 24px;
+            background: rgba(255,59,48,0.2);
+            border-radius: 12px;
+            text-align: center;
+            max-width: 300px;
+        }
+        #error-box.visible { display: block; }
+        #error-box p { color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+<div id="container">
+    <video id="video" playsinline autoplay muted></video>
+    <canvas id="canvas"></canvas>
+
+    <!-- Edge warning strips -->
+    <div class="edge-strip" id="strip-left"></div>
+    <div class="edge-strip" id="strip-right"></div>
+
+    <!-- Top status -->
+    <div id="status-bar">
+        <div id="posture-pill" class="idle">
+            <span class="dot"></span>
+            <span id="status-text">Starting up…</span>
+        </div>
+        <div id="bad-timer">Bad posture: 0:00</div>
+    </div>
+
+    <!-- Centre alert (ring + message) -->
+    <div id="alert-overlay">
+        <div id="alert-ring">🔴</div>
+        <div id="alert-message">Straighten your neck!</div>
+    </div>
+
+    <!-- Bottom controls -->
+    <div id="controls">
+        <div id="debug-line"></div>
+        <div class="slider-row">
+            <label>Sensitivity</label>
+            <input type="range" id="sensitivity" min="1" max="10" value="5" step="1">
+        </div>
+        <button class="btn" id="calibrate-btn">📐 Calibrate</button>
+    </div>
+
+    <!-- Calibration modal -->
+    <div id="cal-overlay">
+        <h2>📏 Calibrating</h2>
+        <p>Sit up straight, look forward — hold still</p>
+        <div id="countdown">3</div>
+        <div id="cal-live-score">detecting…</div>
+    </div>
+
+    <!-- Loading screen -->
+    <div id="loading">
+        <div class="spinner"></div>
+        <p id="loading-text">Loading pose detection model…</p>
+        <div id="error-box"><p id="error-msg"></p></div>
+    </div>
+</div>
+
+<script type="module">
+import {
+    PoseLandmarker,
+    FilesetResolver
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
+
+// ── DOM ──────────────────────────────────────────────────────────────────────
+const video        = document.getElementById("video");
+const canvas       = document.getElementById("canvas");
+const ctx          = canvas.getContext("2d");
+const pill         = document.getElementById("posture-pill");
+const statusText   = document.getElementById("status-text");
+const badTimer     = document.getElementById("bad-timer");
+const alertOvl     = document.getElementById("alert-overlay");
+const stripL       = document.getElementById("strip-left");
+const stripR       = document.getElementById("strip-right");
+const debugLine    = document.getElementById("debug-line");
+const calBtn       = document.getElementById("calibrate-btn");
+const calOvl       = document.getElementById("cal-overlay");
+const countdownEl  = document.getElementById("countdown");
+const calLiveScore = document.getElementById("cal-live-score");
+const loadingEl    = document.getElementById("loading");
+const loadingText  = document.getElementById("loading-text");
+const errorBox     = document.getElementById("error-box");
+const errorMsg     = document.getElementById("error-msg");
+const sensSlider   = document.getElementById("sensitivity");
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let landmarker    = null;
+let running       = false;
+let lastVideoTime = -1;
+let baseline      = null;
+let rollingScores = [];
+let detectionMode = "auto";
+let state         = "idle";
+let badCount      = 0;
+let badStartTime  = null;   // when bad posture began (for timer)
+
+const WINDOW   = 20;   // rolling-average frame count
+const DEBOUNCE = 25;   // frames before triggering "bad"
+
+// Landmark indices
+const NOSE = 0, L_EAR = 7, R_EAR = 8, L_SHOULDER = 11, R_SHOULDER = 12;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showError(msg) {
+    errorMsg.textContent = msg;
+    errorBox.classList.add("visible");
+}
+function setLoading(msg) { loadingText.textContent = msg; }
+
+function fmtTime(ms) {
+    const s = Math.floor(ms / 1000);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+// ── Canvas resize + coord mapping ─────────────────────────────────────────────
+function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+
+function toViewport(normX, normY) {
+    const vw = video.videoWidth  || 640;
+    const vh = video.videoHeight || 480;
+    const cw = canvas.width, ch = canvas.height;
+    const videoAspect  = vw / vh;
+    const screenAspect = cw / ch;
+    let drawW, drawH, offX, offY;
+    if (screenAspect > videoAspect) {
+        drawW = cw; drawH = cw / videoAspect; offX = 0; offY = (ch - drawH) / 2;
+    } else {
+        drawH = ch; drawW = ch * videoAspect; offX = (cw - drawW) / 2; offY = 0;
+    }
+    return { x: normX * drawW + offX, y: normY * drawH + offY };
+}
+
+// ── State machine ─────────────────────────────────────────────────────────────
+function setState(s) {
+    const prev = state;
+    state = s;
+
+    pill.className = s;
+    statusText.textContent =
+        s === "good" ? "Good posture ✓" :
+        s === "warn" ? "Check posture" :
+        s === "bad"  ? "Bad posture!" : "Waiting…";
+
+    const isBad = s === "bad";
+
+    // Alert ring + message + edge strips
+    alertOvl.classList.toggle("visible", isBad);
+    stripL.classList.toggle("visible", isBad);
+    stripR.classList.toggle("visible", isBad);
+
+    // Bad posture timer
+    if (isBad) {
+        if (prev !== "bad") badStartTime = Date.now();
+        const elapsed = Date.now() - badStartTime;
+        badTimer.textContent = `⏱ Bad posture: ${fmtTime(elapsed)}`;
+        badTimer.classList.add("visible");
+    } else {
+        badTimer.classList.remove("visible");
+        badStartTime = null;
+    }
+
+    // Vibrate on first transition to bad
+    if (isBad && prev !== "bad" && navigator.vibrate) {
+        navigator.vibrate([300, 100, 300]);
+    }
+}
+
+// Update bad timer every second while bad
+setInterval(() => {
+    if (state === "bad" && badStartTime) {
+        const elapsed = Date.now() - badStartTime;
+        badTimer.textContent = `⏱ Bad posture: ${fmtTime(elapsed)}`;
+    }
+}, 1000);
+
+// ── Posture score ─────────────────────────────────────────────────────────────
+function postureScore(lm) {
+    const nose = lm[NOSE], lE = lm[L_EAR], rE = lm[R_EAR];
+    const lS = lm[L_SHOULDER], rS = lm[R_SHOULDER];
+
+    const noseOk      = nose.visibility > 0.35;
+    const earsOk      = lE.visibility > 0.3 && rE.visibility > 0.3;
+    const shouldersOk = lS.visibility > 0.3 && rS.visibility > 0.3;
+
+    // Shoulder mode (more accurate)
+    if (noseOk && shouldersOk) {
+        const sW = Math.abs(rS.x - lS.x);
+        if (sW > 0.02) {
+            const midY = (lS.y + rS.y) / 2;
+            let score = (midY - nose.y) / sW;
+            if (earsOk) {
+                const earMidY = (lE.y + rE.y) / 2;
+                score += ((midY - earMidY) / sW) * 0.25;
+            }
+            detectionMode = "shoulders";
+            return score;
+        }
+    }
+
+    // Face-only fallback (laptop close-up)
+    if (noseOk && earsOk) {
+        const earDist = Math.abs(rE.x - lE.x);
+        if (earDist > 0.01) {
+            const earMidY = (lE.y + rE.y) / 2;
+            detectionMode = "face";
+            return -(nose.y - earMidY) / earDist;
+        }
+    }
+
+    return null;
+}
+
+// ── Draw overlay ──────────────────────────────────────────────────────────────
+function drawOverlay(lm) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const pts = [NOSE, L_EAR, R_EAR, L_SHOULDER, R_SHOULDER];
+    const colors = {
+        [NOSE]: "#ff9500",
+        [L_EAR]: "#5ac8fa", [R_EAR]: "#5ac8fa",
+        [L_SHOULDER]: "#34c759", [R_SHOULDER]: "#34c759"
+    };
+
+    for (const i of pts) {
+        const p = lm[i];
+        if (p.visibility < 0.3) continue;
+        const { x, y } = toViewport(p.x, p.y);
+
+        // Outer glow for bad state
+        if (state === "bad") {
+            ctx.beginPath();
+            ctx.arc(x, y, 14, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255,59,48,0.25)";
+            ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fillStyle = state === "bad" ? "#ff3b30" : colors[i];
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#fff";
+        ctx.stroke();
+    }
+
+    const nose = lm[NOSE], lE = lm[L_EAR], rE = lm[R_EAR];
+    const lS = lm[L_SHOULDER], rS = lm[R_SHOULDER];
+    const pNose = nose.visibility > 0.35 ? toViewport(nose.x, nose.y) : null;
+
+    const lineColor =
+        state === "good" ? "rgba(52,199,89,0.75)" :
+        state === "warn" ? "rgba(255,204,0,0.75)" :
+        state === "bad"  ? "rgba(255,59,48,0.9)"  :
+        "rgba(255,255,255,0.3)";
+    const lineWidth = state === "bad" ? 3 : 2;
+
+    if (lS.visibility > 0.3 && rS.visibility > 0.3 && pNose) {
+        const pLS  = toViewport(lS.x, lS.y);
+        const pRS  = toViewport(rS.x, rS.y);
+        const pMid = { x: (pLS.x + pRS.x) / 2, y: (pLS.y + pRS.y) / 2 };
+
+        ctx.beginPath();
+        ctx.moveTo(pLS.x, pLS.y);
+        ctx.lineTo(pRS.x, pRS.y);
+        ctx.strokeStyle = "rgba(52,199,89,0.4)";
+        ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(pMid.x, pMid.y);
+        ctx.lineTo(pNose.x, pNose.y);
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = lineWidth; ctx.setLineDash([5, 5]); ctx.stroke();
+        ctx.setLineDash([]);
+
+    } else if (lE.visibility > 0.3 && rE.visibility > 0.3 && pNose) {
+        const pLE    = toViewport(lE.x, lE.y);
+        const pRE    = toViewport(rE.x, rE.y);
+        const pEarMid = { x: (pLE.x + pRE.x) / 2, y: (pLE.y + pRE.y) / 2 };
+
+        ctx.beginPath();
+        ctx.moveTo(pLE.x, pLE.y);
+        ctx.lineTo(pRE.x, pRE.y);
+        ctx.strokeStyle = "rgba(90,200,250,0.4)";
+        ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(pEarMid.x, pEarMid.y);
+        ctx.lineTo(pNose.x, pNose.y);
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = lineWidth; ctx.setLineDash([5, 5]); ctx.stroke();
+        ctx.setLineDash([]);
+    }
+}
+
+// ── Per-frame processing ──────────────────────────────────────────────────────
+function processResults(results) {
+    if (!results.landmarks || results.landmarks.length === 0) {
+        debugLine.textContent = "No person detected — make sure your face is in frame";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+    }
+
+    const lm = results.landmarks[0];
+    drawOverlay(lm);
+
+    const score = postureScore(lm);
+    if (score === null) {
+        debugLine.textContent = "Low confidence — adjust lighting or move back";
+        return;
+    }
+
+    rollingScores.push(score);
+    if (rollingScores.length > WINDOW) rollingScores.shift();
+    const avg = rollingScores.reduce((a, b) => a + b, 0) / rollingScores.length;
+
+    // Feed calibration live score
+    if (calLiveScore) {
+        calLiveScore.textContent = `score: ${avg.toFixed(3)}`;
+    }
+
+    if (baseline === null) {
+        debugLine.textContent = `[${detectionMode}] score ${avg.toFixed(3)} — tap Calibrate`;
+        return;
+    }
+
+    const sens = sensSlider.value / 5;
+    const baseThreshold = detectionMode === "face" ? 0.08 : 0.15;
+    const threshold     = baseThreshold / sens;
+    const warnThresh    = threshold * 0.55;
+    const deviation     = baseline - avg;
+
+    debugLine.textContent =
+        `[${detectionMode}] Δ${(deviation * 100).toFixed(1)}%  thresh ±${(threshold * 100).toFixed(0)}%`;
+
+    if (deviation > threshold) {
+        badCount = Math.min(badCount + 1, DEBOUNCE + 15);
+        setState(badCount >= DEBOUNCE ? "bad" : "warn");
+    } else if (deviation > warnThresh) {
+        badCount = Math.max(0, badCount - 1);
+        setState("warn");
+    } else {
+        badCount = Math.max(0, badCount - 2);
+        setState(badCount === 0 ? "good" : "warn");
+    }
+}
+
+// ── Detection loop ────────────────────────────────────────────────────────────
+function loop() {
+    if (!running) return;
+    if (video.currentTime !== lastVideoTime) {
+        lastVideoTime = video.currentTime;
+        const results = landmarker.detectForVideo(video, performance.now());
+        processResults(results);
+    }
+    requestAnimationFrame(loop);
+}
+
+// ── Camera ────────────────────────────────────────────────────────────────────
+async function startCamera() {
+    setLoading("Requesting camera access…");
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } },
+            audio: false
+        });
+        video.srcObject = stream;
+        await new Promise(r => { video.onloadeddata = r; });
+        resizeCanvas();
+    } catch (err) {
+        if (err.name === "NotAllowedError") {
+            showError("Camera permission denied. Allow camera access in Safari settings and reload.");
+        } else {
+            showError("Could not start camera: " + err.message);
+        }
+        throw err;
+    }
+}
+
+// ── Calibration ───────────────────────────────────────────────────────────────
+let calibrating = false;
+
+function startCalibration() {
+    if (calibrating) return;
+    calibrating = true;
+    rollingScores = [];
+    baseline = null;
+    calBtn.classList.add("calibrating");
+    calBtn.textContent = "Calibrating…";
+    calOvl.classList.add("active");
+
+    let count = 3;
+    countdownEl.textContent = count;
+
+    const tick = setInterval(() => {
+        count--;
+        if (count > 0) { countdownEl.textContent = count; return; }
+        clearInterval(tick);
+        countdownEl.textContent = "✓";
+
+        setTimeout(() => {
+            if (rollingScores.length >= 2) {
+                baseline = rollingScores.reduce((a, b) => a + b, 0) / rollingScores.length;
+                badCount = 0;
+                setState("good");
+                debugLine.textContent = `Baseline set: ${baseline.toFixed(3)} [${detectionMode}]`;
+            } else {
+                debugLine.textContent = "Calibration failed — move into frame and try again";
+            }
+            calibrating = false;
+            calOvl.classList.remove("active");
+            calBtn.classList.remove("calibrating");
+            calBtn.textContent = "📐 Calibrate";
+        }, 1800);
+    }, 1000);
+}
+
+calBtn.addEventListener("click", startCalibration);
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+async function boot() {
+    try {
+        setLoading("Loading pose-detection model (first load may take ~10s)…");
+
+        const vision = await FilesetResolver.forVisionTasks(
+            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+        );
+
+        const modelPath =
+            "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
+
+        try {
+            landmarker = await PoseLandmarker.createFromOptions(vision, {
+                baseOptions: { modelAssetPath: modelPath, delegate: "GPU" },
+                runningMode: "VIDEO", numPoses: 1
+            });
+        } catch (gpuErr) {
+            console.warn("GPU failed, falling back to CPU:", gpuErr.message);
+            setLoading("GPU unavailable — loading CPU mode…");
+            landmarker = await PoseLandmarker.createFromOptions(vision, {
+                baseOptions: { modelAssetPath: modelPath, delegate: "CPU" },
+                runningMode: "VIDEO", numPoses: 1
+            });
+        }
+
+        await startCamera();
+        loadingEl.classList.add("hidden");
+        running = true;
+        loop();
+
+        // Auto-calibrate shortly after launch
+        setTimeout(startCalibration, 1500);
+
+    } catch (err) {
+        console.error("Boot error:", err);
+        if (!errorBox.classList.contains("visible")) {
+            showError("Something went wrong: " + err.message);
+        }
+    }
+}
+
+boot();
+</script>
+</body>
+</html>
