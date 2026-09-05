@@ -14,16 +14,14 @@
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif;
             overflow: hidden;
-            height: 100vh;
-            height: 100dvh;
+            height: 100vh; height: 100dvh;
             touch-action: none;
         }
 
         #container {
             position: relative;
             width: 100vw;
-            height: 100vh;
-            height: 100dvh;
+            height: 100vh; height: 100dvh;
         }
 
         video {
@@ -49,7 +47,7 @@
             position: absolute;
             top: 0; left: 0; right: 0;
             padding: calc(env(safe-area-inset-top, 24px) + 8px) 16px 16px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 60%, transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.75) 60%, transparent);
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -70,43 +68,28 @@
             -webkit-backdrop-filter: blur(12px);
             transition: background 0.3s, color 0.3s;
         }
-        #posture-pill .dot {
-            width: 11px; height: 11px;
-            border-radius: 50%;
-            background: currentColor;
-        }
+        #posture-pill .dot { width: 11px; height: 11px; border-radius: 50%; background: currentColor; }
         #posture-pill.good { background: rgba(52,199,89,0.25);  color: #34c759; }
         #posture-pill.warn { background: rgba(255,204,0,0.25);  color: #ffcc00; }
         #posture-pill.bad  { background: rgba(255,59,48,0.35);  color: #ff3b30; }
         #posture-pill.idle { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.55); }
 
-        /* bad-posture timer badge */
         #bad-timer {
-            font-size: 13px;
-            font-weight: 600;
-            color: #ff3b30;
-            background: rgba(255,59,48,0.18);
-            border-radius: 100px;
-            padding: 4px 14px;
-            display: none;
+            font-size: 13px; font-weight: 600; color: #ff3b30;
+            background: rgba(255,59,48,0.18); border-radius: 100px;
+            padding: 4px 14px; display: none;
             font-variant-numeric: tabular-nums;
         }
         #bad-timer.visible { display: block; }
 
         /* ======= EDGE WARNING STRIPS ======= */
         .edge-strip {
-            position: absolute;
-            top: 0; bottom: 0;
-            width: 10px;
-            z-index: 6;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: absolute; top: 0; bottom: 0; width: 10px;
+            z-index: 6; pointer-events: none; opacity: 0; transition: opacity 0.3s;
         }
         #strip-left  { left: 0;  background: linear-gradient(to right, rgba(255,59,48,0.85), transparent); }
         #strip-right { right: 0; background: linear-gradient(to left,  rgba(255,59,48,0.85), transparent); }
         .edge-strip.visible { opacity: 1; animation: stripPulse 0.9s ease-in-out infinite; }
-
         @keyframes stripPulse {
             0%, 100% { opacity: 0.5; width: 10px; }
             50%       { opacity: 1;   width: 22px; }
@@ -114,34 +97,20 @@
 
         /* ======= CENTRE ALERT ======= */
         #alert-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s;
-            gap: 20px;
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 5; opacity: 0; pointer-events: none;
+            transition: opacity 0.4s; gap: 20px;
         }
-        #alert-overlay.visible {
-            opacity: 1;
-            background: rgba(255,59,48,0.10);
-        }
+        #alert-overlay.visible { opacity: 1; background: rgba(255,59,48,0.10); }
 
-        /* Big pulsing red circle */
         #alert-ring {
-            width: 120px; height: 120px;
-            border-radius: 50%;
+            width: 120px; height: 120px; border-radius: 50%;
             background: rgba(255,59,48,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 52px;
             animation: ringPulse 0.8s ease-in-out infinite;
-            box-shadow: 0 0 0 0 rgba(255,59,48,0.7);
         }
         @keyframes ringPulse {
             0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(255,59,48,0.7); }
@@ -152,195 +121,143 @@
         #alert-message {
             padding: 16px 32px;
             background: rgba(255,59,48,0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 18px;
-            font-size: 20px;
-            font-weight: 800;
-            text-align: center;
-            line-height: 1.3;
-            letter-spacing: -0.01em;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-radius: 18px; font-size: 20px; font-weight: 800;
+            text-align: center; line-height: 1.3;
         }
 
         /* ======= BOTTOM CONTROLS ======= */
         #controls {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            padding: 20px 20px calc(env(safe-area-inset-bottom, 16px) + 12px);
-            background: linear-gradient(to top, rgba(0,0,0,0.75) 60%, transparent);
+            padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 10px);
+            background: linear-gradient(to top, rgba(0,0,0,0.82) 65%, transparent);
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+
+        /* ---- Mode selector ---- */
+        #mode-row {
+            display: flex; gap: 8px;
+            overflow-x: auto; width: 100%;
+            padding-bottom: 2px; scrollbar-width: none;
+        }
+        #mode-row::-webkit-scrollbar { display: none; }
+
+        .mode-btn {
+            flex: 0 0 auto;
+            padding: 8px 14px;
+            border: 1.5px solid transparent;
+            border-radius: 20px;
+            font-size: 13px; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            background: rgba(255,255,255,0.07);
+            color: rgba(255,255,255,0.45);
+            transition: all 0.2s; white-space: nowrap;
+            position: relative;
+        }
+        .mode-btn:active { transform: scale(0.95); }
+        .mode-btn.active {
+            background: rgba(255,255,255,0.18);
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+        }
+        /* Green tick overlay when both good+bad are calibrated for this mode */
+        .mode-btn.cal-full::after {
+            content: "●";
+            position: absolute; top: 2px; right: 4px;
+            font-size: 7px; color: #34c759;
+        }
+        .mode-btn.cal-half::after {
+            content: "●";
+            position: absolute; top: 2px; right: 4px;
+            font-size: 7px; color: #ffcc00;
         }
 
         #debug-line {
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
+            font-size: 11px; color: rgba(255,255,255,0.38);
             font-variant-numeric: tabular-nums;
-            min-height: 15px;
-            text-align: center;
+            min-height: 14px; text-align: center; width: 100%;
         }
 
         .slider-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            max-width: 300px;
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; max-width: 320px;
         }
         .slider-row label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            white-space: nowrap;
-            min-width: 72px;
+            font-size: 12px; color: rgba(255,255,255,0.5);
+            white-space: nowrap; min-width: 110px;
         }
         .slider-row input[type="range"] {
-            flex: 1;
-            accent-color: #34c759;
-            height: 4px;
+            flex: 1; accent-color: #34c759; height: 4px;
         }
 
-        .btn {
-            padding: 13px 36px;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: transform 0.1s, background 0.2s;
-        }
-        .btn:active { transform: scale(0.96); }
-        /* ---- Calibration row ---- */
-        #cal-status {
-            font-size: 12px;
-            color: rgba(255,255,255,0.45);
-            text-align: center;
-            min-height: 16px;
-        }
-        #cal-row {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            max-width: 300px;
-        }
-        .cal-btn {
-            flex: 1;
-            padding: 12px 10px;
-            border: none;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: opacity 0.2s, transform 0.1s;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        .cal-btn:active { transform: scale(0.96); }
-        #cal-good-btn { background: rgba(52,199,89,0.22); color: #34c759; }
-        #cal-bad-btn  { background: rgba(255,59,48,0.22);  color: #ff3b30; }
-        .cal-btn.done        { outline: 2px solid currentColor; outline-offset: 2px; }
-        .cal-btn.calibrating { opacity: 0.55; pointer-events: none; }
-
-        /* ---- Toggle button row ---- */
-        #toggle-row {
-            display: flex;
-            gap: 10px;
-        }
+        /* ---- Toggle row ---- */
+        #toggle-row { display: flex; gap: 10px; }
         .toggle-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.2s, opacity 0.2s;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 8px 16px; border: none; border-radius: 20px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: background 0.2s;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
         .toggle-btn:active { transform: scale(0.95); }
         .toggle-btn.on  { background: rgba(255,255,255,0.22); color: #fff; }
-        .toggle-btn.off { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); }
+        .toggle-btn.off { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.38); }
+
+        /* ---- Calibration row ---- */
+        #cal-status {
+            font-size: 12px; color: rgba(255,255,255,0.45);
+            text-align: center; min-height: 16px; width: 100%;
+        }
+        #cal-row {
+            display: flex; gap: 10px;
+            width: 100%; max-width: 320px;
+        }
+        .cal-btn {
+            flex: 1; padding: 12px 10px; border: none;
+            border-radius: 14px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: opacity 0.2s, transform 0.1s, outline 0.15s;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .cal-btn:active { transform: scale(0.96); }
+        #cal-good-btn { background: rgba(52,199,89,0.22);  color: #34c759; }
+        #cal-bad-btn  { background: rgba(255,59,48,0.22);  color: #ff3b30; }
+        .cal-btn.done        { outline: 2px solid currentColor; outline-offset: 2px; }
+        .cal-btn.calibrating { opacity: 0.5; pointer-events: none; }
 
         /* ======= CALIBRATION OVERLAY ======= */
         #cal-overlay {
-            position: absolute;
-            inset: 0;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 50;
-            gap: 14px;
+            position: absolute; inset: 0;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 50; gap: 14px;
         }
         #cal-overlay.active { display: flex; }
-        #cal-overlay h2 { font-size: 24px; font-weight: 800; }
-        #cal-overlay p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.65);
-            text-align: center;
-            max-width: 260px;
-            line-height: 1.5;
-        }
-        #countdown {
-            font-size: 80px;
-            font-weight: 900;
-            color: #34c759;
-            font-variant-numeric: tabular-nums;
-            line-height: 1;
-        }
-        #cal-live-score {
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            font-variant-numeric: tabular-nums;
-        }
+        #cal-title { font-size: 24px; font-weight: 800; }
+        #cal-desc  { font-size: 15px; color: rgba(255,255,255,0.65); text-align: center; max-width: 260px; line-height: 1.5; }
+        #countdown { font-size: 80px; font-weight: 900; color: #34c759; font-variant-numeric: tabular-nums; line-height: 1; }
+        #cal-live-score { font-size: 13px; color: rgba(255,255,255,0.4); font-variant-numeric: tabular-nums; }
 
         /* ======= LOADING ======= */
         #loading {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            z-index: 100;
-            gap: 20px;
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: #000; z-index: 100; gap: 20px;
         }
         #loading.hidden { display: none; }
-
         .spinner {
             width: 36px; height: 36px;
             border: 3px solid rgba(255,255,255,0.15);
-            border-top-color: #fff;
-            border-radius: 50%;
+            border-top-color: #fff; border-radius: 50%;
             animation: spin 0.7s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        #loading p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.6);
-            text-align: center;
-            max-width: 280px;
-            line-height: 1.5;
-        }
-
-        #error-box {
-            display: none;
-            padding: 16px 24px;
-            background: rgba(255,59,48,0.2);
-            border-radius: 12px;
-            text-align: center;
-            max-width: 300px;
-        }
+        #loading p { font-size: 15px; color: rgba(255,255,255,0.6); text-align: center; max-width: 280px; line-height: 1.5; }
+        #error-box { display: none; padding: 16px 24px; background: rgba(255,59,48,0.2); border-radius: 12px; text-align: center; max-width: 300px; }
         #error-box.visible { display: block; }
         #error-box p { color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.5; }
     </style>
@@ -350,7 +267,6 @@
     <video id="video" playsinline autoplay muted></video>
     <canvas id="canvas"></canvas>
 
-    <!-- Edge warning strips -->
     <div class="edge-strip" id="strip-left"></div>
     <div class="edge-strip" id="strip-right"></div>
 
@@ -363,7 +279,7 @@
         <div id="bad-timer">Bad posture: 0:00</div>
     </div>
 
-    <!-- Centre alert (ring + message) -->
+    <!-- Centre alert -->
     <div id="alert-overlay">
         <div id="alert-ring">🔴</div>
         <div id="alert-message">Straighten your neck!</div>
@@ -371,16 +287,29 @@
 
     <!-- Bottom controls -->
     <div id="controls">
+
+        <!-- Activity mode selector -->
+        <div id="mode-row">
+            <button class="mode-btn active" data-mode="writing">✍️ Writing</button>
+            <button class="mode-btn"        data-mode="video">📺 Video</button>
+            <button class="mode-btn"        data-mode="reading">📄 Reading</button>
+            <button class="mode-btn"        data-mode="tablet">📱 Tablet</button>
+            <button class="mode-btn"        data-mode="idle">💤 Idle</button>
+        </div>
+
         <div id="debug-line"></div>
+
         <div class="slider-row">
             <label id="sens-label">Sensitivity · 5</label>
             <input type="range" id="sensitivity" min="1" max="10" value="5" step="1">
         </div>
+
         <div id="toggle-row">
             <button class="toggle-btn on" id="dots-btn">👁 Dots</button>
             <button class="toggle-btn on" id="sound-btn">🔔 Sound</button>
         </div>
-        <div id="cal-status">Calibrate both postures to begin tracking</div>
+
+        <div id="cal-status">Select a mode, then calibrate your postures</div>
         <div id="cal-row">
             <button class="cal-btn" id="cal-good-btn">✅ Sit Straight</button>
             <button class="cal-btn" id="cal-bad-btn">😞 Slouch Now</button>
@@ -390,7 +319,7 @@
     <!-- Calibration modal -->
     <div id="cal-overlay">
         <h2 id="cal-title">📏 Calibrating</h2>
-        <p id="cal-desc">Sit up straight, look forward — hold still</p>
+        <p  id="cal-desc">Hold still…</p>
         <div id="countdown">3</div>
         <div id="cal-live-score">detecting…</div>
     </div>
@@ -404,12 +333,50 @@
 </div>
 
 <script type="module">
-import {
-    PoseLandmarker,
-    FilesetResolver
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
+import { PoseLandmarker, FilesetResolver }
+    from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
 
-// ── DOM ──────────────────────────────────────────────────────────────────────
+// ── Activity modes ────────────────────────────────────────────────────────────
+const MODES = [
+    { id: "writing", label: "✍️ Writing",  hint: "Keep your back straight\nand eyes level with the screen." },
+    { id: "video",   label: "📺 Video",    hint: "Relax but keep your\nhead from drooping forward." },
+    { id: "reading", label: "📄 Reading",  hint: "Sit upright with the\ndocument at eye level." },
+    { id: "tablet",  label: "📱 Tablet",   hint: "Raise the tablet to\nreduce neck tilt." },
+    { id: "idle",    label: "💤 Idle",     hint: "Maintain a neutral\nspine even at rest." },
+];
+
+// Per-mode calibration store: { baseline, badBaseline }
+// Persisted in localStorage so calibrations survive page reload
+let modeCalibrations = {};
+MODES.forEach(m => { modeCalibrations[m.id] = { baseline: null, badBaseline: null }; });
+
+function saveCalibrations() {
+    try { localStorage.setItem("postureCalibrations_v2", JSON.stringify(modeCalibrations)); } catch(e) {}
+}
+function loadCalibrations() {
+    try {
+        const s = localStorage.getItem("postureCalibrations_v2");
+        if (s) {
+            const loaded = JSON.parse(s);
+            MODES.forEach(m => { if (loaded[m.id]) modeCalibrations[m.id] = loaded[m.id]; });
+        }
+    } catch(e) {}
+}
+
+let currentMode = (() => {
+    try { return localStorage.getItem("postureMode") || "writing"; } catch(e) { return "writing"; }
+})();
+
+// Shorthand live references (updated on mode switch)
+let baseline    = null;
+let badBaseline = null;
+
+function syncFromMode() {
+    baseline    = modeCalibrations[currentMode].baseline;
+    badBaseline = modeCalibrations[currentMode].badBaseline;
+}
+
+// ── DOM ───────────────────────────────────────────────────────────────────────
 const video        = document.getElementById("video");
 const canvas       = document.getElementById("canvas");
 const ctx          = canvas.getContext("2d");
@@ -436,42 +403,35 @@ const errorBox     = document.getElementById("error-box");
 const errorMsg     = document.getElementById("error-msg");
 const sensSlider   = document.getElementById("sensitivity");
 const sensLabel    = document.getElementById("sens-label");
+const modeBtns     = document.querySelectorAll(".mode-btn");
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// ── App state ─────────────────────────────────────────────────────────────────
 let landmarker    = null;
 let running       = false;
 let lastVideoTime = -1;
-let baseline      = null;   // good posture score
-let badBaseline   = null;   // bad posture score (slouched)
 let rollingScores = [];
 let detectionMode = "auto";
 let state         = "idle";
 let badCount      = 0;
-let badStartTime  = null;   // when bad posture began (for timer)
-let showDots      = true;   // toggle for landmark overlay
-let soundEnabled  = true;   // toggle for bell alert
-let audioCtx      = null;   // Web Audio context (created on first user gesture)
-let lastBellTime  = 0;      // prevent bell spam (min 8s between rings)
+let badStartTime  = null;
+let showDots      = true;
+let soundEnabled  = true;
+let audioCtx      = null;
+let lastBellTime  = 0;
 
-const WINDOW   = 20;   // rolling-average frame count
-const DEBOUNCE = 25;   // frames before triggering "bad"
-
-// Landmark indices
+const WINDOW   = 20;
+const DEBOUNCE = 25;
 const NOSE = 0, L_EAR = 7, R_EAR = 8, L_SHOULDER = 11, R_SHOULDER = 12;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function showError(msg) {
-    errorMsg.textContent = msg;
-    errorBox.classList.add("visible");
-}
+function showError(msg) { errorMsg.textContent = msg; errorBox.classList.add("visible"); }
 function setLoading(msg) { loadingText.textContent = msg; }
-
 function fmtTime(ms) {
     const s = Math.floor(ms / 1000);
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
-// ── Bell sound (Web Audio API — no file needed) ───────────────────────────────
+// ── Bell sound ────────────────────────────────────────────────────────────────
 function ensureAudioCtx() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === "suspended") audioCtx.resume();
@@ -481,42 +441,144 @@ function ensureAudioCtx() {
 function playBell() {
     if (!soundEnabled) return;
     const now = Date.now();
-    if (now - lastBellTime < 8000) return;  // max once every 8s
+    if (now - lastBellTime < 8000) return;
     lastBellTime = now;
-
     try {
-        const ac  = ensureAudioCtx();
-        const t   = ac.currentTime;
-
-        // Two-partial bell: fundamental + octave
-        const freqs = [880, 1760];
-        freqs.forEach((freq, i) => {
-            const osc  = ac.createOscillator();
-            const gain = ac.createGain();
-            osc.connect(gain);
-            gain.connect(ac.destination);
+        const ac = ensureAudioCtx(), t = ac.currentTime;
+        [880, 1760].forEach((freq, i) => {
+            const osc = ac.createOscillator(), gain = ac.createGain();
+            osc.connect(gain); gain.connect(ac.destination);
             osc.type = "sine";
             osc.frequency.setValueAtTime(freq, t);
-            // Quick attack, long exponential decay — classic bell envelope
             gain.gain.setValueAtTime(0, t);
             gain.gain.linearRampToValueAtTime(i === 0 ? 0.5 : 0.25, t + 0.01);
             gain.gain.exponentialRampToValueAtTime(0.0001, t + 2.5);
-            osc.start(t);
-            osc.stop(t + 2.6);
+            osc.start(t); osc.stop(t + 2.6);
         });
-    } catch (e) { console.warn("Bell failed:", e); }
+    } catch(e) { console.warn("Bell failed:", e); }
 }
+
+// ── Mode UI ───────────────────────────────────────────────────────────────────
+function refreshModeBtnDots() {
+    modeBtns.forEach(btn => {
+        const id  = btn.dataset.mode;
+        const cal = modeCalibrations[id];
+        btn.classList.remove("cal-full", "cal-half");
+        if (cal.baseline !== null && cal.badBaseline !== null) {
+            btn.classList.add("cal-full");
+        } else if (cal.baseline !== null || cal.badBaseline !== null) {
+            btn.classList.add("cal-half");
+        }
+    });
+}
+
+function switchMode(id) {
+    currentMode = id;
+    try { localStorage.setItem("postureMode", id); } catch(e) {}
+    syncFromMode();
+    badCount = 0;
+    rollingScores = [];
+
+    modeBtns.forEach(btn => btn.classList.toggle("active", btn.dataset.mode === id));
+    updateCalStatus();
+
+    const modeObj = MODES.find(m => m.id === id);
+    debugLine.textContent = modeObj ? modeObj.hint.replace("\n", "  ") : "";
+}
+
+modeBtns.forEach(btn => {
+    btn.addEventListener("click", () => { ensureAudioCtx(); switchMode(btn.dataset.mode); });
+});
+
+// ── Calibration status ────────────────────────────────────────────────────────
+function updateCalStatus() {
+    const cal     = modeCalibrations[currentMode];
+    const goodDone = cal.baseline !== null;
+    const badDone  = cal.badBaseline !== null;
+
+    calGoodBtn.classList.toggle("done", goodDone);
+    calBadBtn.classList.toggle("done",  badDone);
+
+    const modeName = MODES.find(m => m.id === currentMode)?.label ?? currentMode;
+
+    if (!goodDone && !badDone) {
+        calStatus.textContent = `${modeName}: calibrate good posture first`;
+    } else if (goodDone && !badDone) {
+        calStatus.textContent = `✅ Good done — now slouch and tap 😞`;
+    } else if (!goodDone && badDone) {
+        calStatus.textContent = `😞 Bad done — sit straight and tap ✅`;
+    } else {
+        const range = ((cal.baseline - cal.badBaseline) * 100).toFixed(1);
+        calStatus.textContent = `${modeName} · range ${range}%  ✓ tracking`;
+    }
+
+    refreshModeBtnDots();
+}
+
+// ── Calibration flow ──────────────────────────────────────────────────────────
+let calibrating = false;
+
+function startCalibration(type) {
+    if (calibrating) return;
+    calibrating = true;
+    const isGood = type === "good";
+    const btn    = isGood ? calGoodBtn : calBadBtn;
+
+    rollingScores = [];
+    btn.classList.add("calibrating");
+
+    calTitle.textContent = isGood ? "✅ Good Posture" : "😞 Bad Posture";
+    calDesc.textContent  = isGood
+        ? "Sit up straight, look forward — hold still"
+        : "Slouch forward as you normally would — hold still";
+
+    calOvl.classList.add("active");
+    let count = 3;
+    countdownEl.textContent = count;
+
+    const tick = setInterval(() => {
+        count--;
+        if (count > 0) { countdownEl.textContent = count; return; }
+        clearInterval(tick);
+        countdownEl.textContent = "✓";
+
+        setTimeout(() => {
+            if (rollingScores.length >= 2) {
+                const avg = rollingScores.reduce((a, b) => a + b, 0) / rollingScores.length;
+                const cal = modeCalibrations[currentMode];
+                if (isGood) {
+                    cal.baseline    = avg;
+                    baseline        = avg;
+                    badCount        = 0;
+                    setState("good");
+                } else {
+                    cal.badBaseline = avg;
+                    badBaseline     = avg;
+                }
+                saveCalibrations();
+                updateCalStatus();
+            } else {
+                calStatus.textContent = "Calibration failed — make sure face is in frame";
+            }
+            calibrating = false;
+            calOvl.classList.remove("active");
+            btn.classList.remove("calibrating");
+        }, 1500);
+    }, 1000);
+}
+
+calGoodBtn.addEventListener("click", () => { ensureAudioCtx(); startCalibration("good"); });
+calBadBtn.addEventListener("click",  () => { ensureAudioCtx(); startCalibration("bad");  });
 
 // ── Sensitivity label ─────────────────────────────────────────────────────────
 sensSlider.addEventListener("input", () => {
-    const v = sensSlider.value;
-    const label = v <= 3 ? "Relaxed" : v >= 8 ? "Strict" : "Medium";
-    sensLabel.textContent = `Sensitivity · ${v}  (${label})`;
+    const v = +sensSlider.value;
+    const lbl = v <= 3 ? "Relaxed" : v >= 8 ? "Strict" : "Medium";
+    sensLabel.textContent = `Sensitivity · ${v}  (${lbl})`;
 });
 
-// ── Toggle button wiring ──────────────────────────────────────────────────────
+// ── Toggle buttons ────────────────────────────────────────────────────────────
 dotsBtn.addEventListener("click", () => {
-    // Unlock AudioContext on first user gesture (required by browsers)
     ensureAudioCtx();
     showDots = !showDots;
     dotsBtn.textContent = showDots ? "👁 Dots" : "🙈 Dots";
@@ -531,10 +593,10 @@ soundBtn.addEventListener("click", () => {
     soundBtn.textContent = soundEnabled ? "🔔 Sound" : "🔕 Sound";
     soundBtn.classList.toggle("on",  soundEnabled);
     soundBtn.classList.toggle("off", !soundEnabled);
-    if (soundEnabled) playBell(); // preview the sound when enabling
+    if (soundEnabled) playBell();
 });
 
-// ── Canvas resize + coord mapping ─────────────────────────────────────────────
+// ── Canvas / viewport ─────────────────────────────────────────────────────────
 function resizeCanvas() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -545,13 +607,12 @@ function toViewport(normX, normY) {
     const vw = video.videoWidth  || 640;
     const vh = video.videoHeight || 480;
     const cw = canvas.width, ch = canvas.height;
-    const videoAspect  = vw / vh;
-    const screenAspect = cw / ch;
+    const va = vw / vh, sa = cw / ch;
     let drawW, drawH, offX, offY;
-    if (screenAspect > videoAspect) {
-        drawW = cw; drawH = cw / videoAspect; offX = 0; offY = (ch - drawH) / 2;
+    if (sa > va) {
+        drawW = cw; drawH = cw / va; offX = 0; offY = (ch - drawH) / 2;
     } else {
-        drawH = ch; drawW = ch * videoAspect; offX = (cw - drawW) / 2; offY = 0;
+        drawH = ch; drawW = ch * va; offX = (cw - drawW) / 2; offY = 0;
     }
     return { x: normX * drawW + offX, y: normY * drawH + offY };
 }
@@ -560,43 +621,35 @@ function toViewport(normX, normY) {
 function setState(s) {
     const prev = state;
     state = s;
-
     pill.className = s;
     statusText.textContent =
         s === "good" ? "Good posture ✓" :
-        s === "warn" ? "Check posture" :
-        s === "bad"  ? "Bad posture!" : "Waiting…";
+        s === "warn" ? "Check posture"  :
+        s === "bad"  ? "Bad posture!"   : "Waiting…";
 
     const isBad = s === "bad";
-
-    // Alert ring + message + edge strips
     alertOvl.classList.toggle("visible", isBad);
     stripL.classList.toggle("visible", isBad);
     stripR.classList.toggle("visible", isBad);
 
-    // Bad posture timer
     if (isBad) {
         if (prev !== "bad") badStartTime = Date.now();
-        const elapsed = Date.now() - badStartTime;
-        badTimer.textContent = `⏱ Bad posture: ${fmtTime(elapsed)}`;
+        badTimer.textContent = `⏱ Bad posture: ${fmtTime(Date.now() - badStartTime)}`;
         badTimer.classList.add("visible");
     } else {
         badTimer.classList.remove("visible");
         badStartTime = null;
     }
 
-    // Vibrate + bell on first transition to bad
     if (isBad && prev !== "bad") {
         if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
         playBell();
     }
 }
 
-// Update bad timer every second while bad
 setInterval(() => {
     if (state === "bad" && badStartTime) {
-        const elapsed = Date.now() - badStartTime;
-        badTimer.textContent = `⏱ Bad posture: ${fmtTime(elapsed)}`;
+        badTimer.textContent = `⏱ Bad posture: ${fmtTime(Date.now() - badStartTime)}`;
     }
 }, 1000);
 
@@ -604,36 +657,27 @@ setInterval(() => {
 function postureScore(lm) {
     const nose = lm[NOSE], lE = lm[L_EAR], rE = lm[R_EAR];
     const lS = lm[L_SHOULDER], rS = lm[R_SHOULDER];
-
-    const noseOk      = nose.visibility > 0.35;
-    const earsOk      = lE.visibility > 0.3 && rE.visibility > 0.3;
+    const noseOk = nose.visibility > 0.35;
+    const earsOk = lE.visibility > 0.3 && rE.visibility > 0.3;
     const shouldersOk = lS.visibility > 0.3 && rS.visibility > 0.3;
 
-    // Shoulder mode (more accurate)
     if (noseOk && shouldersOk) {
         const sW = Math.abs(rS.x - lS.x);
         if (sW > 0.02) {
             const midY = (lS.y + rS.y) / 2;
             let score = (midY - nose.y) / sW;
-            if (earsOk) {
-                const earMidY = (lE.y + rE.y) / 2;
-                score += ((midY - earMidY) / sW) * 0.25;
-            }
+            if (earsOk) score += (((lS.y + rS.y) / 2 - (lE.y + rE.y) / 2) / sW) * 0.25;
             detectionMode = "shoulders";
             return score;
         }
     }
-
-    // Face-only fallback (laptop close-up)
     if (noseOk && earsOk) {
         const earDist = Math.abs(rE.x - lE.x);
         if (earDist > 0.01) {
-            const earMidY = (lE.y + rE.y) / 2;
             detectionMode = "face";
-            return -(nose.y - earMidY) / earDist;
+            return -(nose.y - (lE.y + rE.y) / 2) / earDist;
         }
     }
-
     return null;
 }
 
@@ -643,79 +687,42 @@ function drawOverlay(lm) {
     if (!showDots) return;
 
     const pts = [NOSE, L_EAR, R_EAR, L_SHOULDER, R_SHOULDER];
-    const colors = {
-        [NOSE]: "#ff9500",
-        [L_EAR]: "#5ac8fa", [R_EAR]: "#5ac8fa",
-        [L_SHOULDER]: "#34c759", [R_SHOULDER]: "#34c759"
-    };
+    const colors = { [NOSE]:"#ff9500", [L_EAR]:"#5ac8fa", [R_EAR]:"#5ac8fa", [L_SHOULDER]:"#34c759", [R_SHOULDER]:"#34c759" };
 
     for (const i of pts) {
         const p = lm[i];
         if (p.visibility < 0.3) continue;
         const { x, y } = toViewport(p.x, p.y);
-
-        // Outer glow for bad state
         if (state === "bad") {
-            ctx.beginPath();
-            ctx.arc(x, y, 14, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(255,59,48,0.25)";
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255,59,48,0.25)"; ctx.fill();
         }
-
-        ctx.beginPath();
-        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2);
         ctx.fillStyle = state === "bad" ? "#ff3b30" : colors[i];
-        ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#fff";
-        ctx.stroke();
+        ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke();
     }
 
     const nose = lm[NOSE], lE = lm[L_EAR], rE = lm[R_EAR];
     const lS = lm[L_SHOULDER], rS = lm[R_SHOULDER];
     const pNose = nose.visibility > 0.35 ? toViewport(nose.x, nose.y) : null;
-
-    const lineColor =
-        state === "good" ? "rgba(52,199,89,0.75)" :
-        state === "warn" ? "rgba(255,204,0,0.75)" :
-        state === "bad"  ? "rgba(255,59,48,0.9)"  :
-        "rgba(255,255,255,0.3)";
+    const lineColor = state === "good" ? "rgba(52,199,89,0.75)" : state === "warn" ? "rgba(255,204,0,0.75)" : state === "bad" ? "rgba(255,59,48,0.9)" : "rgba(255,255,255,0.3)";
     const lineWidth = state === "bad" ? 3 : 2;
 
     if (lS.visibility > 0.3 && rS.visibility > 0.3 && pNose) {
-        const pLS  = toViewport(lS.x, lS.y);
-        const pRS  = toViewport(rS.x, rS.y);
+        const pLS = toViewport(lS.x, lS.y), pRS = toViewport(rS.x, rS.y);
         const pMid = { x: (pLS.x + pRS.x) / 2, y: (pLS.y + pRS.y) / 2 };
-
-        ctx.beginPath();
-        ctx.moveTo(pLS.x, pLS.y);
-        ctx.lineTo(pRS.x, pRS.y);
-        ctx.strokeStyle = "rgba(52,199,89,0.4)";
-        ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(pMid.x, pMid.y);
-        ctx.lineTo(pNose.x, pNose.y);
-        ctx.strokeStyle = lineColor;
-        ctx.lineWidth = lineWidth; ctx.setLineDash([5, 5]); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pLS.x, pLS.y); ctx.lineTo(pRS.x, pRS.y);
+        ctx.strokeStyle = "rgba(52,199,89,0.4)"; ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pMid.x, pMid.y); ctx.lineTo(pNose.x, pNose.y);
+        ctx.strokeStyle = lineColor; ctx.lineWidth = lineWidth; ctx.setLineDash([5,5]); ctx.stroke();
         ctx.setLineDash([]);
-
     } else if (lE.visibility > 0.3 && rE.visibility > 0.3 && pNose) {
-        const pLE    = toViewport(lE.x, lE.y);
-        const pRE    = toViewport(rE.x, rE.y);
-        const pEarMid = { x: (pLE.x + pRE.x) / 2, y: (pLE.y + pRE.y) / 2 };
-
-        ctx.beginPath();
-        ctx.moveTo(pLE.x, pLE.y);
-        ctx.lineTo(pRE.x, pRE.y);
-        ctx.strokeStyle = "rgba(90,200,250,0.4)";
-        ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(pEarMid.x, pEarMid.y);
-        ctx.lineTo(pNose.x, pNose.y);
-        ctx.strokeStyle = lineColor;
-        ctx.lineWidth = lineWidth; ctx.setLineDash([5, 5]); ctx.stroke();
+        const pLE = toViewport(lE.x, lE.y), pRE = toViewport(rE.x, rE.y);
+        const pEM = { x: (pLE.x + pRE.x) / 2, y: (pLE.y + pRE.y) / 2 };
+        ctx.beginPath(); ctx.moveTo(pLE.x, pLE.y); ctx.lineTo(pRE.x, pRE.y);
+        ctx.strokeStyle = "rgba(90,200,250,0.4)"; ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pEM.x, pEM.y); ctx.lineTo(pNose.x, pNose.y);
+        ctx.strokeStyle = lineColor; ctx.lineWidth = lineWidth; ctx.setLineDash([5,5]); ctx.stroke();
         ctx.setLineDash([]);
     }
 }
@@ -733,7 +740,7 @@ function processResults(results) {
 
     const score = postureScore(lm);
     if (score === null) {
-        debugLine.textContent = "Low confidence — adjust lighting or move back";
+        debugLine.textContent = "Low confidence — adjust lighting or distance";
         return;
     }
 
@@ -741,45 +748,34 @@ function processResults(results) {
     if (rollingScores.length > WINDOW) rollingScores.shift();
     const avg = rollingScores.reduce((a, b) => a + b, 0) / rollingScores.length;
 
-    // Feed calibration live score
-    if (calLiveScore) {
-        calLiveScore.textContent = `score: ${avg.toFixed(3)}`;
-    }
+    calLiveScore.textContent = `score: ${avg.toFixed(3)}`;
 
     if (baseline === null) {
-        debugLine.textContent = `[${detectionMode}] score ${avg.toFixed(3)} — calibrate good posture first`;
+        debugLine.textContent = `[${detectionMode}] score ${avg.toFixed(3)} — tap ✅ Sit Straight to calibrate`;
         return;
     }
 
-    const deviation = baseline - avg;  // positive = slouching away from good
-
+    const deviation = baseline - avg;
     let threshold, warnThresh;
 
     if (badBaseline !== null) {
-        // ── Dual-calibrated mode: threshold derived from actual good↔bad range
-        const range = baseline - badBaseline;           // actual gap (always positive if calibrated correctly)
+        const range = baseline - badBaseline;
         if (range > 0.005) {
-            // sensitivity 1–10: trigger at 80%…20% of the way toward bad posture
-            const triggerFraction = 0.80 - (sensSlider.value - 1) / 9 * 0.60;
+            const triggerFraction = 0.80 - (+sensSlider.value - 1) / 9 * 0.60;
             threshold  = range * triggerFraction;
             warnThresh = threshold * 0.50;
-            const pct = Math.round((deviation / range) * 100);
-            debugLine.textContent =
-                `[${detectionMode}] ${pct}% toward bad  (alert at ${Math.round(triggerFraction*100)}%)`;
+            const pct  = Math.round((deviation / range) * 100);
+            debugLine.textContent = `[${detectionMode}] ${Math.max(0, pct)}% toward bad posture  (alert at ${Math.round(triggerFraction * 100)}%)`;
         } else {
-            // Calibrated backwards or too close — use fixed fallback
-            threshold  = 0.10;
-            warnThresh = 0.05;
-            debugLine.textContent = `[${detectionMode}] Δ${(deviation*100).toFixed(1)}% — re-calibrate bad posture`;
+            threshold = 0.10; warnThresh = 0.05;
+            debugLine.textContent = `[${detectionMode}] re-calibrate — range too small`;
         }
     } else {
-        // ── Single-calibrated fallback (no bad baseline yet)
-        const sens  = sensSlider.value / 5;
+        const sens  = +sensSlider.value / 5;
         const baseT = detectionMode === "face" ? 0.06 : 0.12;
         threshold   = baseT / sens;
         warnThresh  = threshold * 0.55;
-        debugLine.textContent =
-            `[${detectionMode}] Δ${(deviation*100).toFixed(1)}%  thresh ${(threshold*100).toFixed(0)}%  (calibrate bad posture for better accuracy)`;
+        debugLine.textContent = `[${detectionMode}] Δ${(deviation*100).toFixed(1)}%  (calibrate 😞 for better accuracy)`;
     }
 
     if (deviation > threshold) {
@@ -799,8 +795,7 @@ function loop() {
     if (!running) return;
     if (video.currentTime !== lastVideoTime) {
         lastVideoTime = video.currentTime;
-        const results = landmarker.detectForVideo(video, performance.now());
-        processResults(results);
+        processResults(landmarker.detectForVideo(video, performance.now()));
     }
     requestAnimationFrame(loop);
 }
@@ -816,105 +811,34 @@ async function startCamera() {
         video.srcObject = stream;
         await new Promise(r => { video.onloadeddata = r; });
         resizeCanvas();
-    } catch (err) {
-        if (err.name === "NotAllowedError") {
-            showError("Camera permission denied. Allow camera access in Safari settings and reload.");
-        } else {
-            showError("Could not start camera: " + err.message);
-        }
+    } catch(err) {
+        showError(err.name === "NotAllowedError"
+            ? "Camera permission denied. Allow camera access in Safari settings and reload."
+            : "Could not start camera: " + err.message);
         throw err;
     }
 }
 
-// ── Calibration ───────────────────────────────────────────────────────────────
-let calibrating = false;
-
-function updateCalStatus() {
-    const goodDone = baseline !== null;
-    const badDone  = badBaseline !== null;
-    calGoodBtn.classList.toggle("done", goodDone);
-    calBadBtn.classList.toggle("done",  badDone);
-    if (!goodDone && !badDone) {
-        calStatus.textContent = "Calibrate both postures to begin tracking";
-    } else if (goodDone && !badDone) {
-        calStatus.textContent = "✅ Good done — now slouch and tap 😞";
-    } else if (!goodDone && badDone) {
-        calStatus.textContent = "😞 Bad done — now sit straight and tap ✅";
-    } else {
-        const range = ((baseline - badBaseline) * 100).toFixed(1);
-        calStatus.textContent = `✅ Both calibrated  •  range ${range}%`;
-    }
-}
-
-function startCalibration(type) {
-    // type: "good" | "bad"
-    if (calibrating) return;
-    calibrating = true;
-
-    const isGood = type === "good";
-    const btn    = isGood ? calGoodBtn : calBadBtn;
-
-    // Freeze the rolling buffer for a fresh read
-    rollingScores = [];
-    btn.classList.add("calibrating");
-    calTitle.textContent = isGood ? "✅ Good Posture" : "😞 Bad Posture";
-    calDesc.textContent  = isGood
-        ? "Sit up straight, look forward — hold still"
-        : "Slouch forward as you naturally would — hold still";
-    calOvl.classList.add("active");
-
-    let count = 3;
-    countdownEl.textContent = count;
-
-    const tick = setInterval(() => {
-        count--;
-        if (count > 0) { countdownEl.textContent = count; return; }
-        clearInterval(tick);
-        countdownEl.textContent = "✓";
-
-        setTimeout(() => {
-            if (rollingScores.length >= 2) {
-                const avg = rollingScores.reduce((a, b) => a + b, 0) / rollingScores.length;
-                if (isGood) {
-                    baseline = avg;
-                    badCount = 0;
-                    setState("good");
-                } else {
-                    badBaseline = avg;
-                }
-                updateCalStatus();
-            } else {
-                calStatus.textContent = "Calibration failed — make sure your face is visible";
-            }
-            calibrating = false;
-            calOvl.classList.remove("active");
-            btn.classList.remove("calibrating");
-        }, 1800);
-    }, 1000);
-}
-
-calGoodBtn.addEventListener("click", () => { ensureAudioCtx(); startCalibration("good"); });
-calBadBtn.addEventListener("click",  () => { ensureAudioCtx(); startCalibration("bad");  });
-
 // ── Boot ──────────────────────────────────────────────────────────────────────
 async function boot() {
-    try {
-        setLoading("Loading pose-detection model (first load may take ~10s)…");
+    loadCalibrations();
+    syncFromMode();
+    switchMode(currentMode);   // sets up active btn, calStatus, hint
 
+    try {
+        setLoading("Loading pose-detection model (first load ~10s)…");
         const vision = await FilesetResolver.forVisionTasks(
             "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
         );
-
-        const modelPath =
-            "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
+        const modelPath = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
 
         try {
             landmarker = await PoseLandmarker.createFromOptions(vision, {
                 baseOptions: { modelAssetPath: modelPath, delegate: "GPU" },
                 runningMode: "VIDEO", numPoses: 1
             });
-        } catch (gpuErr) {
-            console.warn("GPU failed, falling back to CPU:", gpuErr.message);
+        } catch(gpuErr) {
+            console.warn("GPU failed, retrying CPU:", gpuErr.message);
             setLoading("GPU unavailable — loading CPU mode…");
             landmarker = await PoseLandmarker.createFromOptions(vision, {
                 baseOptions: { modelAssetPath: modelPath, delegate: "CPU" },
@@ -927,14 +851,14 @@ async function boot() {
         running = true;
         loop();
 
-        // Auto-calibrate good posture shortly after launch
-        setTimeout(() => startCalibration("good"), 1500);
-
-    } catch (err) {
-        console.error("Boot error:", err);
-        if (!errorBox.classList.contains("visible")) {
-            showError("Something went wrong: " + err.message);
+        // Auto-calibrate good posture if none saved for this mode
+        if (baseline === null) {
+            setTimeout(() => startCalibration("good"), 1500);
         }
+
+    } catch(err) {
+        console.error("Boot error:", err);
+        if (!errorBox.classList.contains("visible")) showError("Something went wrong: " + err.message);
     }
 }
 
